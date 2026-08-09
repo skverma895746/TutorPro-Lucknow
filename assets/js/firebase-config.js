@@ -23,14 +23,15 @@ import {
 // ---------- 1. YOUR FIREBASE PROJECT CONFIG ----------
 // TODO: replace these placeholder values with the config
 // copied from your own Firebase project.
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyC-JYak4K9_fDF25Vx5RvU_5pcX-rvf69k",
+    authDomain: "tutorpro-1ca4c.firebaseapp.com",
+    projectId: "tutorpro-1ca4c",
+    storageBucket: "tutorpro-1ca4c.firebasestorage.app",
+    messagingSenderId: "191425127029",
+    appId: "1:191425127029:web:c87554634e52e2287bce3c",
+    measurementId: "G-85RYGVGC7Z"
+  };
 
 // ---------- 2. INITIALIZE FIREBASE + FIRESTORE ----------
 const app = initializeApp(firebaseConfig);
