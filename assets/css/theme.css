@@ -1,0 +1,71 @@
+:root{
+    /* brand accent (buttons, icons, links) — light mode: royal blue */
+    --purple-1:#1e3a8a;
+    --purple-2:#2563eb;
+    --purple-3:#3b82f6;
+    --grad: linear-gradient(90deg,var(--purple-1),var(--purple-3));
+
+    /* secondary accent (headline highlights on dark sections) — gold */
+    --gold-1:#c9971f;
+    --gold-2:#f0cb63;
+    --grad-gold: linear-gradient(90deg,var(--gold-1),var(--gold-2));
+
+    /* text color that sits ON TOP of the --grad accent (buttons/icon badges) */
+    --on-grad:#ffffff;
+    --btn-shadow: rgba(30,58,138,.35);
+
+    /* surfaces */
+    --bg-body:#ffffff;
+    --bg-card:#ffffff;
+    --bg-header: rgba(255,255,255,.92);
+    --bg-lav:#eef2fb;
+    --input-bg:#f7f9fd;
+    --input-border:#dbe2f0;
+    --chev-bg:#e6edfa;
+    --overlay-bg: rgba(8,14,32,.45);
+    --mobile-nav-border:#f1eef8;
+    --nav-link-color:#332e42;
+    --field-icon-color:#a29bb5;
+    --switch-track:#e7e2f5;
+    --switch-track-active:#1e2a4d;
+
+    /* dark hero / "why choose" surface */
+    --dark:#0a1128;
+
+    /* typography + borders */
+    --text-dark:#141a2e;
+    --text-gray:#5c6478;
+    --border:#e2e6f3;
+  }
+
+  /* ---------- DARK MODE — change everything from right here ---------- */
+  html[data-theme="dark"]{
+    /* accent turns yellow/amber in dark mode → buttons, icons, links all follow */
+    --purple-1:#b45309;
+    --purple-2:#d97706;
+    --purple-3:#fbbf24;
+    --gold-1:#d97706;
+    --gold-2:#fde68a;
+    --on-grad:#211603;
+    --btn-shadow: rgba(217,119,6,.4);
+
+    --bg-body:#070b18;
+    --bg-card:#0f1730;
+    --bg-header: rgba(8,13,28,.9);
+    --bg-lav:#171226;
+    --input-bg:#131c38;
+    --input-border:#1e2a4d;
+    --chev-bg:#1c2848;
+    --overlay-bg: rgba(4,8,20,.65);
+    --mobile-nav-border:#1c2848;
+    --nav-link-color:#c7cde0;
+    --field-icon-color:#7e88a8;
+    --switch-track:#1e2a4d;
+    --switch-track-active:#3a2c05;
+
+    --dark:#05070f;
+
+    --text-dark:#e7ebf7;
+    --text-gray:#8b93ad;
+    --border:#1e2a4d;
+  }
