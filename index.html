@@ -69,6 +69,10 @@
   }
 }
 </script>
+          <!-- manifest-link    -->
+<link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <!-- ================== -->
 <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/responsive.css">
@@ -444,5 +448,17 @@
 
 <script src="assets/js/script.js"></script>
 <script type="module" src="assets/js/firebase-config.js"></script>
+
+
+<!-- Service Worker Registration JS -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('TutorPro Service Worker Registered!'))
+                    .catch(err => console.log('Service Worker Fail:', err));
+            });
+        }
+    </script>
 </body>
 </html>
