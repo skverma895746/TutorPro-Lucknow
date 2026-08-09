@@ -1,5 +1,5 @@
 /* ---------- RESPONSIVE ---------- */
-  @media (max-width:980px){
+  @media (max-width:1000px){
     .why-grid,.feat-grid,.stats-grid,.test-grid,.foot-grid{grid-template-columns:1fr;}
     .why-img{order:-1;}
     .why-img img{height:280px;}
