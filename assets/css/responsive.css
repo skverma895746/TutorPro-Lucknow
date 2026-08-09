@@ -29,6 +29,6 @@
     .teacher-grid{grid-template-columns:1fr;}
     .contact-stats{gap:26px;}
     .faq-contact{grid-template-columns:1fr;}
-    .get-started-card{margin:40px 16px 0;padding:26px 20px;}
+    .get-started-card{margin:40px 0px;padding:26px 20px;}
     .foot-bottom{flex-direction:column;align-items:flex-start;}
   }
