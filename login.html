@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TutorPro - Admin Login</title>
+  <link rel="stylesheet" href="assets/css/login.css">
+</head>
+<body>
+
+  <div class="auth-container">
+    <h2>Admin Login</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" required placeholder="admin@tutorpro.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" required placeholder="••••••••">
+      </div>
+      <button type="submit" class="btn" id="loginBtn">Login</button>
+      <p id="loginStatus" style="margin-top: 1rem; font-size: 0.85rem; color: #ef4444; text-align: center;"></p>
+    </form>
+  </div>
+
+  <script type="module">
+    import { auth, signInWithEmailAndPassword, onAuthStateChanged } from './assets/js/firebase-config.js';
+
+    // Auto Redirect to Dashboard if already logged in
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        window.location.replace("dashboard.html");
+      }
+    });
+
+    const loginForm = document.getElementById("loginForm");
+    const loginStatus = document.getElementById("loginStatus");
+
+    if (loginForm) {
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value.trim();
+
+        try {
+          loginStatus.style.color = "#94a3b8";
+          loginStatus.textContent = "Logging in...";
+          
+          await signInWithEmailAndPassword(auth, email, password);
+          window.location.replace("dashboard.html");
+
+        } catch (error) {
+          loginStatus.style.color = "#ef4444";
+          loginStatus.textContent = "Login Failed: Incorrect email or password.";
+        }
+      });
+    }
+  </script>
+</body>
+</html>

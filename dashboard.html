@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TutorPro - Admin Dashboard</title>
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard-container">
+    <div class="dash-header">
+      <h2>Query Records Dashboard</h2>
+      <button id="logout-btn" class="btn btn-danger">Logout</button>
+    </div>
+
+    <!-- Search Section -->
+    <div class="search-section">
+      <div class="search-grid">
+        <input type="text" id="search-name" placeholder="Search by Full Name">
+        <input type="text" id="search-class" placeholder="Search by Grade/Class">
+      </div>
+      <div class="btn-group">
+        <button id="fetch-btn" class="btn" style="width: 150px;">Fetch Data</button>
+        <button id="fetch-all-btn" class="btn btn-secondary" style="width: 150px;">Show All</button>
+      </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Full Name</th>
+            <th>WhatsApp</th>
+            <th>Grade/Class</th>
+            <th>Apply As</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="records-table">
+          <tr>
+            <td colspan="6" id="status-cell" style="text-align: center; color: #94a3b8;">
+              Initializing Firebase Connection...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script type="module">
+    // Direct CDN Imports - Isme Path Miss hone ka koi risk nahi hai!
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // TutorPro Firebase Project Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-JYak4K9_fDF25Vx5RvU_5pcX-rvf69k",
+      authDomain: "tutorpro-1ca4c.firebaseapp.com",
+      projectId: "tutorpro-1ca4c",
+      storageBucket: "tutorpro-1ca4c.firebasestorage.app",
+      messagingSenderId: "191425127029",
+      appId: "1:191425127029:web:c87554634e52e2287bce3c",
+      measurementId: "G-85RYGVGC7Z"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const tableBody = document.getElementById('records-table');
+
+    // 1. Auth Guard (Direct Verify)
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        console.log("No user authenticated. Redirecting to login...");
+        window.location.replace("login.html");
+      } else {
+        console.log("Admin logged in successfully:", user.email);
+        await fetchData();
+      }
+    });
+
+    // Logout Functionality
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await signOut(auth);
+      window.location.replace("login.html");
+    });
+
+    // 2. Fetch Data Function
+    async function fetchData(filterName = "", filterClass = "") {
+      tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center;">Fetching data from Firestore Database...</td></tr>`;
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "queries"));
+        tableBody.innerHTML = "";
+        let count = 0;
+
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+
+          const nameVal = data.fullName || data.name || 'N/A';
+          const classVal = data.grade || data.classGrade || 'N/A';
+          const phoneVal = data.whatsapp || 'N/A';
+          const roleVal = data.applyAs || data.registerAs || 'N/A';
+
+          const matchesName = nameVal.toLowerCase().includes(filterName.toLowerCase());
+          const matchesClass = classVal.toLowerCase().includes(filterClass.toLowerCase());
+
+          if (matchesName && matchesClass) {
+            count++;
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+              <td>
+                <input type="checkbox" ${data.status ? 'checked' : ''} data-id="${docSnap.id}">
+              </td>
+              <td>${nameVal}</td>
+              <td>${phoneVal}</td>
+              <td>${classVal}</td>
+              <td>${roleVal}</td>
+              <td>
+                <button class="btn-danger" data-id="${docSnap.id}">Delete</button>
+              </td>
+            `;
+
+            // Checkbox Update
+            const checkbox = tr.querySelector('input[type="checkbox"]');
+            checkbox.addEventListener('change', async (e) => {
+              const id = e.target.getAttribute('data-id');
+              try {
+                await updateDoc(doc(db, "queries", id), {
+                  status: e.target.checked
+                });
+              } catch (err) {
+                alert("Error updating status: " + err.message);
+              }
+            });
+
+            // Delete Record
+            const deleteBtn = tr.querySelector('.btn-danger');
+            deleteBtn.addEventListener('click', async (e) => {
+              const id = e.target.getAttribute('data-id');
+              if (confirm("Are you sure you want to delete this record?")) {
+                try {
+                  await deleteDoc(doc(db, "queries", id));
+                  fetchData(filterName, filterClass);
+                } catch (err) {
+                  alert("Error deleting record: " + err.message);
+                }
+              }
+            });
+
+            tableBody.appendChild(tr);
+          }
+        });
+
+        if (count === 0) {
+          tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #94a3b8;">No records found in "queries" collection.</td></tr>`;
+        }
+
+      } catch (error) {
+        console.error("Firestore Fetch Error:", error);
+        tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ef4444; font-weight: bold;">Error: ${error.message}</td></tr>`;
+      }
+    }
+
+    // Filter Button Listeners
+    document.getElementById('fetch-btn').addEventListener('click', () => {
+      const name = document.getElementById('search-name').value.trim();
+      const classGrade = document.getElementById('search-class').value.trim();
+      fetchData(name, classGrade);
+    });
+
+    document.getElementById('fetch-all-btn').addEventListener('click', () => {
+      document.getElementById('search-name').value = "";
+      document.getElementById('search-class').value = "";
+      fetchData();
+    });
+  </script>
+</body>
+</html>

@@ -1,16 +1,23 @@
-// ==========================================================
-// FIREBASE SETUP — TutorPro Query Form
-// ==========================================================
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore,
-  collection,
+// firebase-config.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { 
+  getAuth, 
+  signInWithEmailAndPassword,
+  signOut, 
+  onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { 
+  getFirestore, 
+  collection, 
   addDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  getDocs, 
+  updateDoc, 
+  deleteDoc, 
+  doc,
+  serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ---------- 1. YOUR FIREBASE PROJECT CONFIG ----------
+// ---------- FIREBASE PROJECT CONFIG ----------
 const firebaseConfig = {
   apiKey: "AIzaSyC-JYak4K9_fDF25Vx5RvU_5pcX-rvf69k",
   authDomain: "tutorpro-1ca4c.firebaseapp.com",
@@ -21,28 +28,41 @@ const firebaseConfig = {
   measurementId: "G-85RYGVGC7Z"
 };
 
-// ---------- 2. INITIALIZE FIREBASE + FIRESTORE ----------
+// ---------- INITIALIZE SERVICES ----------
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ---------- 3. WIRE UP THE FORM ----------
+// Export Services for Login & Dashboard
+export { 
+  auth,
+  db,
+  signInWithEmailAndPassword,
+  signOut, 
+  onAuthStateChanged,
+  collection, 
+  getDocs, 
+  updateDoc, 
+  deleteDoc, 
+  doc 
+};
+
+// ---------- WIRE UP PUBLIC QUERY FORM ----------
 const queryForm = document.getElementById("queryForm");
 const formStatus = document.getElementById("formStatus");
 const submitBtn = document.getElementById("submitQueryBtn");
 
-// मैसेज को कुछ देर बाद ऑटो-डिलीट (Hide) करने का फ़ंक्शन
 let statusTimeout;
 function showStatusMessage(text, isError = false, duration = 5000) {
-  // अगर कोई पुराना टाइमर चल रहा है तो उसे रोकें
   clearTimeout(statusTimeout);
+  if (!formStatus) return;
 
   formStatus.textContent = text;
-  formStatus.className = "form-status show"; // शो क्लास जोड़ें
+  formStatus.className = "form-status show";
   if (isError) {
     formStatus.classList.add("error");
   }
 
-  // 5 सेकंड (5000ms) बाद मैसेज हटा दें
   statusTimeout = setTimeout(() => {
     formStatus.classList.remove("show", "error");
     formStatus.textContent = "";
@@ -53,10 +73,15 @@ if (queryForm && formStatus && submitBtn) {
   queryForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const fullName = document.getElementById("fullNameInput").value.trim();
-    const whatsapp = document.getElementById("whatsappInput").value.trim();
-    const grade = document.getElementById("gradeSelect").value;
-    const applyAs = document.getElementById("applyAsSelect").value;
+    const fullNameInput = document.getElementById("fullNameInput");
+    const whatsappInput = document.getElementById("whatsappInput");
+    const gradeSelect = document.getElementById("gradeSelect");
+    const applyAsSelect = document.getElementById("applyAsSelect");
+
+    const fullName = fullNameInput ? fullNameInput.value.trim() : "";
+    const whatsapp = whatsappInput ? whatsappInput.value.trim() : "";
+    const grade = gradeSelect ? gradeSelect.value : "";
+    const applyAs = applyAsSelect ? applyAsSelect.value : "";
 
     if (!fullName || !whatsapp || !grade || !applyAs) {
       showStatusMessage("Please fill in all fields.", true);
@@ -67,11 +92,13 @@ if (queryForm && formStatus && submitBtn) {
     submitBtn.textContent = "Submitting...";
 
     try {
+      // Direct Firestore Save to "queries" collection
       await addDoc(collection(db, "queries"), {
         fullName: fullName,
         whatsapp: whatsapp,
         grade: grade,
         applyAs: applyAs,
+        status: false, // Checkbox default value for Dashboard tracking
         createdAt: serverTimestamp()
       });
 

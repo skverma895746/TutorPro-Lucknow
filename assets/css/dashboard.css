@@ -1,0 +1,37 @@
+:root {
+  --bg-color: #0f172a;
+  --card-bg: #1e293b;
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --danger: #ef4444;
+  --border: #334155;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+
+body {
+  background-color: var(--bg-color); color: var(--text-main);
+  display: flex; justify-content: center; min-height: 100vh; padding: 2rem 1rem;
+}
+
+.dashboard-container {
+  width: 100%; max-width: 980px; background: var(--card-bg);
+  padding: 2rem; border-radius: 12px; border: 1px solid var(--border);
+}
+
+.dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+.search-grid input { padding: 0.6rem; background: #0f172a; color: #fff; border: 1px solid var(--border); border-radius: 6px; }
+
+.btn-group { display: flex; gap: 1rem; margin-top: 1rem; }
+.btn { padding: 0.65rem 1.2rem; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+.btn-secondary { background: #334155; }
+.btn-danger { background: var(--danger); border: none; color: #fff; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; }
+
+.table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); margin-top: 1rem; }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th, td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+th { background: #0f172a; color: var(--text-muted); }
+input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
