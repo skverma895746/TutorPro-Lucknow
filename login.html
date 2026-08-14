@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>TutorPro - Admin Login</title>
-  <link rel="stylesheet" href="assets/css/login.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="assets/css/login.css">
+<title>TutorPro - Admin Login</title>
+
 </head>
 <body>
+
+  <div class="brand-logo">
+    <div class="mark">TP</div>
+    <span>TutorPro</span>
+  </div>
 
   <div class="auth-container">
     <h2>Admin Login</h2>
@@ -24,7 +31,21 @@
   </div>
 
   <script type="module">
-    import { auth, signInWithEmailAndPassword, onAuthStateChanged } from './assets/js/firebase-config.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-JYak4K9_fDF25Vx5RvU_5pcX-rvf69k",
+      authDomain: "tutorpro-1ca4c.firebaseapp.com",
+      projectId: "tutorpro-1ca4c",
+      storageBucket: "tutorpro-1ca4c.firebasestorage.app",
+      messagingSenderId: "191425127029",
+      appId: "1:191425127029:web:c87554634e52e2287bce3c",
+      measurementId: "G-85RYGVGC7Z"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
     // Auto Redirect to Dashboard if already logged in
     onAuthStateChanged(auth, (user) => {
@@ -35,6 +56,7 @@
 
     const loginForm = document.getElementById("loginForm");
     const loginStatus = document.getElementById("loginStatus");
+    const loginBtn = document.getElementById("loginBtn");
 
     if (loginForm) {
       loginForm.addEventListener("submit", async (e) => {
@@ -44,15 +66,18 @@
         const password = document.getElementById("loginPassword").value.trim();
 
         try {
+          loginBtn.disabled = true;
           loginStatus.style.color = "#94a3b8";
           loginStatus.textContent = "Logging in...";
-          
+
           await signInWithEmailAndPassword(auth, email, password);
           window.location.replace("dashboard.html");
 
         } catch (error) {
           loginStatus.style.color = "#ef4444";
           loginStatus.textContent = "Login Failed: Incorrect email or password.";
+        } finally {
+          loginBtn.disabled = false;
         }
       });
     }
