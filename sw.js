@@ -4,9 +4,13 @@ const CACHE_NAME = 'tutorpro-v1';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
+    './login.html',
+    './dashboard.html',
     './manifest.json',
     './assets/css/style.css',
     './assets/css/responsive.css',
+    './assets/css/login.css',
+    './assets/css/dashboard.css',
     './assets/css/theme.css',
     './assets/js/script.js',
     './assets/js/firebase-config.js',
